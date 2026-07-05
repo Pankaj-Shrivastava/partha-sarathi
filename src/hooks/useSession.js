@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { fetchWelcome } from '../utils/api';
 
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -9,8 +10,10 @@ function generateUUID() {
 
 export function useSession() {
   const [sessionId, setSessionId] = useState(null);
+  const [welcomeShloka, setWelcomeShloka] = useState(null);
 
   useEffect(() => {
+    // 1. Initialize or retrieve session ID
     try {
       let currentSession = sessionStorage.getItem('partha_sarathi_session');
       if (!currentSession) {
@@ -23,7 +26,26 @@ export function useSession() {
       console.warn('sessionStorage is not available. Using ephemeral session.');
       setSessionId(generateUUID());
     }
+
+    // 2. Fetch welcome shloka when the app loads
+    const loadWelcome = async () => {
+      const data = await fetchWelcome();
+      if (data) {
+        setWelcomeShloka(data);
+      } else {
+        // Fallback to default if backend fails
+        setWelcomeShloka({
+          shloka: {
+            devanagari: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।\nमा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥",
+            citation: "Chapter 2, Verse 47"
+          },
+          translation: "You have a right to perform your prescribed duty, but you are not entitled to the fruits of action. Never consider yourself the cause of the results of your activities, and never be attached to not doing your duty."
+        });
+      }
+    };
+
+    loadWelcome();
   }, []);
 
-  return sessionId;
+  return { sessionId, welcomeShloka };
 }

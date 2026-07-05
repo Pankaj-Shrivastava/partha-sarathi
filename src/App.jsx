@@ -8,8 +8,8 @@ import { useChat } from './hooks/useChat';
 import { useSession } from './hooks/useSession';
 
 function App() {
-  const sessionId = useSession();
-  const { messages, isLoading, sendMessage } = useChat();
+  const { sessionId, welcomeShloka } = useSession();
+  const { messages, isLoading, error, sendMessage, clearError } = useChat(sessionId);
 
   const handleStart = () => {
     sendMessage("I am seeking guidance.");
@@ -28,6 +28,17 @@ function App() {
 
       <OfflineBanner />
       <DisclaimerBanner />
+
+      {/* Error Toast */}
+      {error && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[60] bg-error/90 text-on-error backdrop-blur-md px-6 py-3 rounded-full shadow-[0_4px_20px_rgba(186,26,26,0.3)] flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+          <span className="material-symbols-outlined text-[18px]">error</span>
+          <span className="font-label-sm text-[12px] tracking-widest">{error}</span>
+          <button onClick={clearError} className="ml-2 hover:bg-white/20 rounded-full p-1 transition-colors flex items-center justify-center">
+            <span className="material-symbols-outlined text-[16px]">close</span>
+          </button>
+        </div>
+      )}
 
       {/* Top AppBar */}
       <header className="w-full z-40 flex justify-between items-center px-4 md:px-6 py-2 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 relative">
@@ -53,7 +64,7 @@ function App() {
 
       {/* Main Content Area */}
       {messages.length === 0 ? (
-        <WelcomeShloka onStart={handleStart} />
+        <WelcomeShloka data={welcomeShloka} onStart={handleStart} />
       ) : (
         <ChatWindow messages={messages} />
       )}

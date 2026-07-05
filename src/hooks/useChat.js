@@ -1,56 +1,55 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { sendChatMessage } from '../utils/api';
 
-const MOCK_SHLOKA_RESPONSE = {
-  type: "shloka_response",
-  shloka: {
-    chapter: 2,
-    verse: 47,
-    citation: "Chapter 2, Verse 47",
-    devanagari: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन ।\nमा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि ॥ ४७ ॥",
-  },
-  translation: "You have a right to perform your prescribed duty, but you are not entitled to the fruits of action.",
-  application: "When responsibilities overwhelm you, it is often because the mind is burdened not just by the tasks themselves, but by the anxiety of their outcomes. The cosmic principle here is detachment from the fruit, not the action. Focus your energy entirely on the present execution of your duty. The 'overwhelm' is a heavy cloak worn by the ego anticipating failure or success. Drop the cloak; perform the action.",
-  reflection: "Which specific responsibility are you currently tying your self-worth to, rather than viewing it simply as a task to be done?"
-};
-
-const MOCK_CRISIS_RESPONSE = {
-  type: "crisis",
-  message: "I hear that you are in a tremendous amount of pain. Please know that this guidance is philosophical, but your life is precious and there is immediate help available."
-};
-
-const MOCK_DECLINE_RESPONSE = {
-  type: "decline",
-  message: "I can only offer guidance based on the philosophical teachings of the Bhagavad Gita. I cannot fulfill this request."
-};
-
-export function useChat() {
+export function useChat(sessionId) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  // Track if the current interaction is a follow-up
+  const isFollowUpRef = useRef(false);
 
   const sendMessage = async (text) => {
-    // 1. Add user message
+    if (!text.trim() || !sessionId) return;
+
+    // 1. Add user message to UI
     const userMsg = { id: Date.now().toString(), role: 'user', content: text };
     setMessages(prev => [...prev, userMsg]);
     setIsLoading(true);
+    setError(null);
 
-    // 2. Simulate network latency
-    setTimeout(() => {
-      let botResponse;
+    try {
+      // 2. Call actual backend API
+      const responseData = await sendChatMessage(text, sessionId, isFollowUpRef.current);
       
-      const lowerText = text.toLowerCase();
-      
-      if (lowerText.includes('kill') || lowerText.includes('suicide') || lowerText.includes('die')) {
-        botResponse = { ...MOCK_CRISIS_RESPONSE, id: (Date.now() + 1).toString(), role: 'assistant' };
-      } else if (lowerText.includes('code') || lowerText.includes('joke')) {
-        botResponse = { ...MOCK_DECLINE_RESPONSE, id: (Date.now() + 1).toString(), role: 'assistant' };
+      // 3. Process backend response
+      const botMsg = { ...responseData, id: (Date.now() + 1).toString(), role: 'assistant' };
+      setMessages(prev => [...prev, botMsg]);
+
+      // 4. Determine follow up state for the NEXT message
+      if (responseData.type === 'shloka_response' && responseData.reflection) {
+        // If they got a reflection, the next message might be answering it
+        isFollowUpRef.current = true;
+      } else if (responseData.type === 'follow_up_prompt') {
+        // They said 'yes' to diving deeper, next message is their detailed query
+        isFollowUpRef.current = true;
       } else {
-        botResponse = { ...MOCK_SHLOKA_RESPONSE, id: (Date.now() + 1).toString(), role: 'assistant' };
+        // For everything else (crisis, decline, follow_up_close), reset the state
+        isFollowUpRef.current = false;
       }
-
-      setMessages(prev => [...prev, botResponse]);
+      
+    } catch (err) {
+      console.error("Chat Error:", err);
+      setError(err.message || 'Unable to connect to the divine realm. Please try again.');
+      
+      // Remove the user message if the request failed completely so they can try again?
+      // Or just let them see the error toast. We'll rely on the error toast.
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
-  return { messages, isLoading, sendMessage };
+  const clearError = () => setError(null);
+
+  return { messages, isLoading, error, sendMessage, clearError };
 }
