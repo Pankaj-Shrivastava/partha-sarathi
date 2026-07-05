@@ -2,6 +2,16 @@ import { queryVerses } from "../lib/chromaClient.js";
 import { generateResponse } from "../lib/llmClient.js";
 import { getSystemPrompt, getFormatInstruction } from "../lib/systemPrompt.js";
 import { detectCrisis, detectOffTopic, detectFollowUp, validateFormat, validateCitation } from "../lib/guardrails.js";
+import Sanscript from '@indic-transliteration/sanscript';
+
+const sanitizeIast = (text) => {
+  if (!text) return "";
+  return text
+    .replace(/śh/g, 'ṣ')
+    .replace(/sh/g, 'ṣ')
+    .replace(/ch/g, 'c') 
+    .replace(/chh/g, 'ch');
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -106,7 +116,7 @@ export default async function handler(req, res) {
         verse: bestMatchVerse.metadata.verse,
         citation: bestMatchVerse.metadata.citation,
         text_content: bestMatchVerse.document,
-        devanagari: llmResult.shloka?.devanagari || bestMatchVerse.metadata.devanagari || null,
+        devanagari: Sanscript.t(sanitizeIast(bestMatchVerse.metadata.sanskrit_roman), 'iast', 'devanagari') || null,
         roman: bestMatchVerse.metadata.sanskrit_roman || llmResult.shloka?.roman || null
       },
       translation: bestMatchVerse.metadata.translation || llmResult.translation,
