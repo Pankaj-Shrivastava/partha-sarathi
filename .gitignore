@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.local
+.venv/
+__pycache__/
+*.pyc
+
+# Data & Output Files
+/pdf/Bhagavad-gita-As-It-Is.pdf
+/ingestion/output/
+.DS_Store
