@@ -4,57 +4,57 @@ export default async function handler(req, res) {
   }
 
   try {
-    const chromaUrl = process.env.CHROMA_URL;
-    const chromaToken = process.env.CHROMA_TOKEN;
-
-    const headers = { "Content-Type": "application/json" };
-    if (chromaToken) {
-      headers["Authorization"] = `Bearer ${chromaToken}`;
-    }
-
-    // 1. Get collection UUID
-    const colRes = await fetch(`${chromaUrl}/api/v2/tenants/default_tenant/databases/default_database/collections/gita_verses`, { headers });
-    if (!colRes.ok) throw new Error("Failed to get collection");
-    const col = await colRes.json();
-    const uuid = col.id;
-
-    // 2. Get document count
-    const countRes = await fetch(`${chromaUrl}/api/v2/tenants/default_tenant/databases/default_database/collections/${uuid}/count?read_level=index_and_wal`, { headers });
-    if (!countRes.ok) throw new Error("Failed to get count");
-    const count = await countRes.json();
-
-    // 3. Fetch a random document
-    const randomOffset = Math.floor(Math.random() * count);
-    const getRes = await fetch(`${chromaUrl}/api/v2/tenants/default_tenant/databases/default_database/collections/${uuid}/get`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        limit: 1,
-        offset: randomOffset,
-        include: ["metadatas", "documents"]
-      })
-    });
-    if (!getRes.ok) throw new Error("Failed to fetch random verse");
-    const result = await getRes.json();
-
-    if (!result || !result.metadatas || result.metadatas[0].length === 0) {
-      return res.status(500).json({ error: "No verses found" });
-    }
-
-    const meta = result.metadatas[0][0] || result.metadatas[0]; // Depending on Chroma get format
-    // In raw fetch, result.metadatas is usually [[{...}]] if multiple ids were requested, or if unbatched, might be [{...}]
-    // Actually for GET it returns `metadatas: [{...}]`
-    const actualMeta = Array.isArray(result.metadatas[0]) ? result.metadatas[0][0] : result.metadatas[0];
-
-    return res.status(200).json({
-      type: "welcome",
-      shloka: {
-        devanagari: actualMeta.devanagari || null,
-        roman: actualMeta.sanskrit_roman || null,
-        citation: actualMeta.citation || `BG ${actualMeta.chapter}.${actualMeta.verse}`
+    const welcomeVerses = [
+      {
+        type: "welcome",
+        shloka: {
+          devanagari: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।\nमा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥",
+          roman: "karmaṇy-evādhikāras te mā phaleṣu kadācana\nmā karma-phala-hetur bhūr mā te saṅgo 'stv akarmaṇi",
+          citation: "Chapter 2, Verse 47"
+        },
+        translation: "You have a right to perform your prescribed duty, but you are not entitled to the fruits of action. Never consider yourself to be the cause of the results of your activities, and never be attached to not doing your duty."
       },
-      translation: actualMeta.translation || "Translation unavailable for this specific verse."
-    });
+      {
+        type: "welcome",
+        shloka: {
+          devanagari: "यदा यदा हि धर्मस्य ग्लानिर्भवति भारत।\nअभ्युत्थानमधर्मस्य तदात्मानं सृजाम्यहम्॥",
+          roman: "yadā yadā hi dharmasya glānir bhavati bhārata\nabhyutthānam adharmasya tadātmānaṁ sṛjāmy aham",
+          citation: "Chapter 4, Verse 7"
+        },
+        translation: "Whenever and wherever there is a decline in religious practice, O descendant of Bharata, and a predominant rise of irreligion—at that time I descend Myself."
+      },
+      {
+        type: "welcome",
+        shloka: {
+          devanagari: "उद्धरेदात्मनात्मानं नात्मानमवसादयेत्।\nआत्मैव ह्यात्मनो बन्धुरात्मैव रिपुरात्मनः॥",
+          roman: "uddhared ātmanātmānaṁ nātmānam avasādayet\nātmaiva hy ātmano bandhur ātmaiva ripur ātmanaḥ",
+          citation: "Chapter 6, Verse 5"
+        },
+        translation: "A man must elevate himself by his own mind, not degrade himself. The mind is the friend of the conditioned soul, and his enemy as well."
+      },
+      {
+        type: "welcome",
+        shloka: {
+          devanagari: "तद्विद्धि प्रणिपातेन परिप्रश्नेन सेवया।\nउपदेक्ष्यन्ति ते ज्ञानं ज्ञानिनस्तत्त्वदर्शिनः॥",
+          roman: "tad viddhi praṇipātena paripraśnena sevayā\nupadekṣyanti te jñānaṁ jñāninas tattva-darśinaḥ",
+          citation: "Chapter 4, Verse 34"
+        },
+        translation: "Just try to learn the truth by approaching a spiritual master. Inquire from him submissively and render service unto him. The self-realized soul can impart knowledge unto you because he has seen the truth."
+      },
+      {
+        type: "welcome",
+        shloka: {
+          devanagari: "सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज।\nअहं त्वां सर्वपापेभ्यो मोक्षयिष्यामि मा शुचः॥",
+          roman: "sarva-dharmān parityajya mām ekaṁ śaraṇaṁ vraja\nahaṁ tvāṁ sarva-pāpebhyo mokṣayiṣyāmi mā śucaḥ",
+          citation: "Chapter 18, Verse 66"
+        },
+        translation: "Abandon all varieties of religion and just surrender unto Me. I shall deliver you from all sinful reaction. Do not fear."
+      }
+    ];
+
+    const randomVerse = welcomeVerses[Math.floor(Math.random() * welcomeVerses.length)];
+    
+    return res.status(200).json(randomVerse);
 
   } catch (error) {
     console.error("Welcome endpoint error:", error);

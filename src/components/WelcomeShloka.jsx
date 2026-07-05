@@ -15,7 +15,7 @@ export default function WelcomeShloka({ data, onStart, language = 'en' }) {
         
         <div className="space-y-3 z-10">
           {/* Dynamic Welcome Shloka */}
-          <p className={`${language === 'hi' ? 'font-sanskrit' : 'font-body-lg italic'} text-[22px] md:text-[28px] text-primary/90 drop-shadow-[0_0_15px_rgba(116,86,0,0.3)] leading-relaxed tracking-wide`} lang={language === 'hi' ? 'sa' : 'en'}>
+          <p className={`${language === 'hi' ? 'font-sanskrit' : 'font-body-lg italic'} text-[22px] md:text-[28px] text-primary/90 drop-shadow-[0_0_15px_rgba(116,86,0,0.3)] leading-relaxed tracking-wide whitespace-pre-line`} lang={language === 'hi' ? 'sa' : 'en'}>
             {displayText}
           </p>
           

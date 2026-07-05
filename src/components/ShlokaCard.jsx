@@ -22,7 +22,7 @@ export default function ShlokaCard({ data, language = 'en' }) {
           {/* Verse Text */}
           {displayText && (
             <div className="text-center py-3">
-              <p className={`${language === 'hi' ? 'font-sanskrit' : 'font-body-lg italic'} text-[18px] text-primary drop-shadow-[0_0_10px_rgba(116,86,0,0.2)] leading-relaxed overflow-wrap break-word`} lang={language === 'hi' ? 'sa' : 'en'}>
+              <p className={`${language === 'hi' ? 'font-sanskrit' : 'font-body-lg italic'} text-[18px] text-primary drop-shadow-[0_0_10px_rgba(116,86,0,0.2)] leading-relaxed overflow-wrap break-word whitespace-pre-line`} lang={language === 'hi' ? 'sa' : 'en'}>
                 {displayText}
               </p>
             </div>
