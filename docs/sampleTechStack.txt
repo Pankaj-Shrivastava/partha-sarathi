@@ -1,0 +1,23 @@
+TECH STACK & PRODUCTION PIPELINE
+
+### Phase 1: Data Preparation & Local Vectorization
+* Text Extraction: Use Python with the PyMuPDF (fitz) library to strip the raw text layer from the 65MB PDF, ignoring all image assets entirely to optimize processing.
+* Text Chunking: Implement LangChain's RecursiveCharacterTextSplitter to split text into discrete semantic chunks mapping a single shloka, its citation, and translation together.
+* Embedding Generation: Process chunks locally or on a free Google Colab T4 GPU notebook using the open-source all-MiniLM-L6-v2 model via sentence-transformers. This runs 100% free with zero API keys or rate limits.
+
+### Phase 2: Open-Source Vector Database (ChromaDB)
+* Hosting Platform: Self-host the open-source version of ChromaDB for free by deploying its official Docker image as a Space on Hugging Face.
+* Security & Execution: Run the database container using the Rust frontend engine (chroma run) instead of the Python server to secure the instance against remote code execution vulnerabilities.
+* Data Ingestion: Establish connection to the Hugging Face Space URL from your local ingestion script and upsert the generated embeddings into a dedicated index.
+
+### Phase 3: Serverless Backend (Node.js on Vercel)
+* Architecture: Initialize a Node.js project structured as individual Serverless Functions natively deployed within Vercel's free Hobby Tier ecosystem.
+* Database Driver: Integrate the official @chromadb/chromadb npm package to coordinate vector queries.
+* LLM Engine Connectivity: Integrate the standard openai npm package configured to point to Groq's high-performance LPU layer via its base URL (https://api.groq.com/openai/v1).
+* Model Deployment Strategy: Use llama-3.1-8b-instant for ultra-fast, sub-second inference speeds under the free-tier limit. If strict prompt instruction-following slips, upgrade to llama-3.3-70b-versatile or openai/gpt-oss-20b.
+
+### Phase 4: Frontend Development (React.js)
+* UI Delivery: Build a clean, responsive chat interface using React.js.
+* Persistent Compliance Banner: Implement a sticky UI disclaimer component pinned to the absolute top of the chat view viewport throughout the duration of user interactions.
+  * Text Content: "This is not professional advice and is based only on Gita facts. Please verify any advice and consult an expert."
+  * Feature Constraint: Furnish a clear dismiss function via a close ('X') button layout allowing users to manually clear the screen.
