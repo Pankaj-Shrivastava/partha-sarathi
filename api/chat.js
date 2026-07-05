@@ -1,6 +1,7 @@
 import { queryVerses } from "../lib/chromaClient.js";
 import { generateResponse } from "../lib/llmClient.js";
 import { getSystemPrompt, getFormatInstruction } from "../lib/systemPrompt.js";
+import { detectCrisis, detectOffTopic, detectFollowUp, validateFormat, validateCitation } from "../lib/guardrails.js";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,12 +15,28 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Message is required" });
     }
 
+    // Guardrail: Crisis Detection
+    const crisisCheck = detectCrisis(message);
+    if (crisisCheck.isCrisis) {
+      return res.status(200).json({ type: "crisis", message: crisisCheck.message });
+    }
+
+    // Guardrail: Follow-Up Detection
+    const followUpCheck = detectFollowUp(message, isFollowUp);
+    if (followUpCheck.isFollowUp && followUpCheck.intent === 'negative') {
+      return res.status(200).json({ type: "decline", message: followUpCheck.message });
+    }
+    // If followUp is positive, we proceed normally to fetch a new verse for their follow-up context
+
     // 1. Vector Retrieval
-    // Get top 3 relevant verses
     const verses = await queryVerses(message, 3);
     
-    if (verses.length === 0) {
-      return res.status(500).json({ error: "Failed to retrieve context from knowledge base" });
+    // Guardrail: Off-Topic Detection (based on vector similarity)
+    if (!isFollowUp) {
+      const offTopicCheck = detectOffTopic(message, verses);
+      if (offTopicCheck.isOffTopic) {
+        return res.status(200).json({ type: "decline", message: offTopicCheck.message });
+      }
     }
 
     // 2. Assemble Context
@@ -35,23 +52,50 @@ export default async function handler(req, res) {
     // 3. Assemble full system prompt
     const fullSystemPrompt = `${getSystemPrompt()}\n\n${getFormatInstruction()}`;
 
-    // 4. Call LLM
-    const llmResult = await generateResponse(fullSystemPrompt, contextString, message);
+    // 4. Call LLM with retry logic for format validation
+    let llmResult = null;
+    let attempts = 0;
+    const maxAttempts = 2; // 1 initial + 1 retry
 
-    // 5. Enhance LLM result with missing devanagari if the LLM hallucinated or stripped it
-    // Often LLMs struggle to output pure devanagari reliably, so we map it back from our retrieved metadata
-    // based on the citation the LLM chose.
-    
-    // Find the original verse from our retrieved chunks to ensure metadata accuracy
-    // (In case the LLM modified the citation string, we do our best to match)
-    let bestMatchVerse = verses[0]; // default to the highest ranked vector match
-    
-    for (const v of verses) {
-      if (llmResult.application && llmResult.application.includes(v.metadata.chapter.toString()) && 
-          llmResult.application.includes(v.metadata.verse.toString())) {
-        bestMatchVerse = v;
-        break;
+    while (attempts < maxAttempts) {
+      attempts++;
+      try {
+        const model = attempts === 1 ? "llama-3.1-8b-instant" : "llama-3.3-70b-versatile";
+        llmResult = await generateResponse(fullSystemPrompt, contextString, message, model);
+        
+        // Guardrail: Post-LLM Format Validation
+        const formatCheck = validateFormat(llmResult);
+        if (formatCheck.isValid) {
+          break; // Success
+        } else {
+          console.warn(`Format invalid on attempt ${attempts}: ${formatCheck.reason}`);
+          if (attempts === maxAttempts) {
+            throw new Error(`LLM failed to produce valid format after ${maxAttempts} attempts: ${formatCheck.reason}`);
+          }
+        }
+      } catch (err) {
+        if (attempts === maxAttempts) throw err;
       }
+    }
+
+    // Guardrail: Post-LLM Citation Validation
+    const chromaMetadata = verses.map(v => v.metadata);
+    const citationCheck = validateCitation(llmResult, chromaMetadata);
+
+    let bestMatchVerse = verses[0]; // default to highest rank
+
+    if (citationCheck.isValid) {
+      // Find the specific verse the LLM successfully cited
+      for (const v of verses) {
+        if (parseInt(v.metadata.chapter, 10) === parseInt(llmResult.shloka.chapter, 10) && 
+            parseInt(v.metadata.verse, 10) === parseInt(llmResult.shloka.verse, 10)) {
+          bestMatchVerse = v;
+          break;
+        }
+      }
+    } else {
+      console.warn("LLM hallucinated citation or stripped it. Defaulting to best semantic match.");
+      // If fabricated, we just use the best vector match and ignore LLM's citation
     }
 
     // 6. Construct final API Response (Schema defined in architecture.md)
