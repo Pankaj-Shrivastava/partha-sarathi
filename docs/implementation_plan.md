@@ -151,15 +151,17 @@ partha-sarathi/
 ### 3.1 Tasks
 
 - [ ] Create `ingestion/chunk.py`
-  - [ ] Build regex patterns to detect verse boundaries in the PDF's format
-    - Expected patterns: `TEXT X.Y`, `CHAPTER X`, verse numbers, Devanagari blocks
+  - [ ] Build regex patterns to detect verse boundaries in the extracted text
+    - Expected patterns: `^CHAPTER (ONE|TWO|...)$`, `^TEXTS?\s+[\d\-]+$`, `^TRANSLATION$`, `^PURPORT$`
   - [ ] Parse each verse into a structured dictionary:
     ```python
     {
         "chapter": 2,
         "verse": 47,
         "citation": "Chapter 2, Verse 47",
-        "devanagari": "कर्मण्येवाधिकारस्ते...",
+        "devanagari": "JaaTaSYa ih Da]uvae... (Balaram encoded)",
+        "sanskrit_roman": "jātasya hi dhruvo...",
+        "synonyms": "jātasya—one who has taken his birth...",
         "translation": "You have a right to...",
         "purport": "First 500 chars of commentary...",
         "source_page": 142
