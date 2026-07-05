@@ -138,7 +138,7 @@ partha-sarathi/
 
 | Check | Method | Expected |
 |---|---|---|
-| Devanagari preserved | `grep "कर्मण्ये" ingestion/output/raw_text.txt` | Matches found |
+| IAST Transliteration fixed | `grep "jātasya" ingestion/output/raw_text.txt` | Matches found |
 | Page count | Script log output | All pages processed (likely 800–1000+ pages) |
 | No binary/image data | Inspect `raw_text.txt` — should be readable text only | No garbled binary content |
 
