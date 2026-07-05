@@ -17,7 +17,7 @@ function App() {
   };
 
   return (
-    <div className="bg-background text-on-surface min-h-screen flex flex-col relative overflow-hidden">
+    <div className="bg-background text-on-surface h-[100dvh] flex flex-col relative overflow-hidden">
       
       {/* Cosmic Background Shaders/Glows */}
       <div 
