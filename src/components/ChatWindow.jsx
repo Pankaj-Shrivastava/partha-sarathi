@@ -36,11 +36,11 @@ export default function ChatWindow({ messages }) {
 
   return (
     <div 
-      className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth"
+      className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth w-full"
       ref={containerRef}
       onScroll={handleScroll}
     >
-      <main className="flex-1 w-full max-w-[1280px] mx-auto px-4 md:px-6 pt-10 pb-[120px] flex flex-col gap-8 relative z-10">
+      <main className="w-full max-w-4xl mx-auto px-6 md:px-8 pt-10 pb-[120px] flex flex-col gap-8 relative z-10">
         {messages.map((msg) => {
           if (msg.role === 'user') {
             return <MessageBubble key={msg.id} message={msg} />;

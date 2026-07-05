@@ -23,7 +23,7 @@ export default function InputBar({ onSend, disabled, isLoading }) {
         >
           <input 
             ref={inputRef}
-            className="flex-1 bg-transparent border-none text-on-surface font-body-lg text-[18px] placeholder:text-on-surface-variant/70 focus:ring-0 px-4 py-2 outline-none disabled:opacity-50"
+            className="flex-1 bg-transparent border-none text-on-surface font-body-lg text-[16px] placeholder:text-on-surface-variant/70 focus:ring-0 px-4 py-2 outline-none disabled:opacity-50"
             placeholder={isLoading ? "Seeking guidance..." : "Speak your mind, seeker..."}
             type="text"
             value={text}

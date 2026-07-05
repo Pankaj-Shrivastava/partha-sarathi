@@ -32,7 +32,6 @@ function App() {
       {/* Top AppBar */}
       <header className="w-full z-40 flex justify-between items-center px-4 md:px-6 py-2 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 relative">
         <div className="flex items-center gap-4">
-          <span className="material-symbols-outlined text-primary text-2xl cursor-pointer hover:text-primary-container transition-colors">menu</span>
           <div className="flex flex-col">
             <span className="font-headline-md text-[24px] text-primary">Partha-Sarathi</span>
           </div>
@@ -40,11 +39,15 @@ function App() {
         <div className="hidden md:flex items-center gap-6">
           <button className="font-label-sm text-[12px] text-primary border-b-2 border-primary pb-1 uppercase tracking-widest">Dialogue</button>
           <button className="font-label-sm text-[12px] text-on-surface-variant hover:text-primary transition-colors pb-1 uppercase tracking-widest">Wisdom</button>
-          <button className="font-label-sm text-[12px] text-on-surface-variant hover:text-primary transition-colors pb-1 uppercase tracking-widest">Path</button>
         </div>
         <div className="flex items-center gap-4">
-          <span className="material-symbols-outlined text-on-surface-variant text-2xl cursor-pointer hover:text-primary transition-colors">account_circle</span>
-          <span className="material-symbols-outlined text-on-surface-variant text-2xl cursor-pointer hover:text-primary transition-colors">settings</span>
+          <button 
+            className="flex items-center gap-1 font-label-sm text-[12px] text-primary hover:text-primary-container transition-colors tracking-widest bg-primary/10 px-3 py-1.5 rounded-full"
+            aria-label="Toggle Language"
+            title="Toggle between English and Hindi"
+          >
+            <span className="uppercase">EN/HI</span>
+          </button>
         </div>
       </header>
 
