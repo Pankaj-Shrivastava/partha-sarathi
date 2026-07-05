@@ -1,7 +1,11 @@
 import React from 'react';
 
-export default function ShlokaCard({ data }) {
+export default function ShlokaCard({ data, language = 'en' }) {
   const { shloka, translation, application, reflection } = data;
+
+  const displayText = language === 'en' 
+    ? (shloka?.roman || shloka?.devanagari)
+    : (shloka?.devanagari || shloka?.roman);
 
   return (
     <div className="flex justify-start w-full">
@@ -15,11 +19,11 @@ export default function ShlokaCard({ data }) {
             </span>
           </div>
 
-          {/* Devanagari Verse */}
-          {shloka?.devanagari && (
+          {/* Verse Text */}
+          {displayText && (
             <div className="text-center py-3">
-              <p className="font-sanskrit text-[18px] text-primary drop-shadow-[0_0_10px_rgba(116,86,0,0.2)] leading-relaxed overflow-wrap break-word" lang="sa">
-                {shloka.devanagari}
+              <p className={`${language === 'hi' ? 'font-sanskrit' : 'font-body-lg italic'} text-[18px] text-primary drop-shadow-[0_0_10px_rgba(116,86,0,0.2)] leading-relaxed overflow-wrap break-word`} lang={language === 'hi' ? 'sa' : 'en'}>
+                {displayText}
               </p>
             </div>
           )}

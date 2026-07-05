@@ -3,7 +3,7 @@ import MessageBubble from './MessageBubble';
 import ShlokaCard from './ShlokaCard';
 import CrisisAlert from './CrisisAlert';
 
-export default function ChatWindow({ messages }) {
+export default function ChatWindow({ messages, language }) {
   const endOfMessagesRef = useRef(null);
   const containerRef = useRef(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -41,15 +41,16 @@ export default function ChatWindow({ messages }) {
       onScroll={handleScroll}
     >
       <main className="w-full max-w-4xl mx-auto px-6 md:px-8 pt-10 pb-[120px] flex flex-col gap-8 relative z-10">
-        {messages.map((msg) => {
+        {messages.map((msg, index) => {
+          const isLast = index === messages.length - 1;
           if (msg.role === 'user') {
-            return <MessageBubble key={msg.id} message={msg} />;
+            return <MessageBubble key={msg.id} message={msg} isLast={isLast} language={language} />;
           }
           if (msg.role === 'assistant') {
             if (msg.type === 'crisis') {
               return <CrisisAlert key={msg.id} data={msg} />;
             } else if (msg.type === 'shloka_response') {
-              return <ShlokaCard key={msg.id} data={msg} />;
+              return <ShlokaCard key={msg.id} data={msg} language={language} />;
             } else {
               // Fallback for simple decline/text responses from the API
               return (

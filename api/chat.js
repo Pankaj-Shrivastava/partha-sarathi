@@ -107,7 +107,7 @@ export default async function handler(req, res) {
         citation: bestMatchVerse.metadata.citation,
         text_content: bestMatchVerse.document,
         devanagari: bestMatchVerse.metadata.devanagari || llmResult.shloka?.devanagari || null,
-        sanskrit_roman: bestMatchVerse.metadata.sanskrit_roman || llmResult.shloka?.roman || null
+        roman: bestMatchVerse.metadata.sanskrit_roman || llmResult.shloka?.roman || null
       },
       translation: bestMatchVerse.metadata.translation || llmResult.translation,
       application: llmResult.application,

@@ -1,6 +1,9 @@
 import React from 'react';
 
-export default function WelcomeShloka({ data, onStart }) {
+export default function WelcomeShloka({ data, onStart, language = 'en' }) {
+  const displayText = language === 'en'
+    ? (data?.roman || data?.devanagari || 'karmany-evadhikaras te ma phalesu kadacana')
+    : (data?.devanagari || data?.roman || 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन');
   if (!data) return null; // Wait until data loads
 
   return (
@@ -11,8 +14,9 @@ export default function WelcomeShloka({ data, onStart }) {
         <div className="absolute inset-0 rounded-xl border border-transparent [background:linear-gradient(45deg,rgba(0,106,106,0.2),rgba(98,146,253,0.2))_border-box] [-webkit-mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)] [-webkit-mask-composite:xor] pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
         
         <div className="space-y-3 z-10">
-          <p className="font-sanskrit-text text-[18px] text-primary drop-shadow-[0_0_15px_rgba(118,214,213,0.4)] leading-relaxed whitespace-pre-line" lang="sa">
-            {data.shloka.devanagari}
+          {/* Dynamic Welcome Shloka */}
+          <p className={`${language === 'hi' ? 'font-sanskrit' : 'font-body-lg italic'} text-[22px] md:text-[28px] text-primary/90 drop-shadow-[0_0_15px_rgba(116,86,0,0.3)] leading-relaxed tracking-wide`} lang={language === 'hi' ? 'sa' : 'en'}>
+            {displayText}
           </p>
           
           <div className="h-px w-24 bg-primary/30 mx-auto my-4"></div>

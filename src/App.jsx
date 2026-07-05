@@ -10,6 +10,7 @@ import { useSession } from './hooks/useSession';
 function App() {
   const { sessionId, welcomeShloka } = useSession();
   const { messages, isLoading, error, sendMessage, clearError } = useChat(sessionId);
+  const [language, setLanguage] = React.useState('en'); // 'en' or 'hi'
 
   const handleStart = () => {
     sendMessage("I am seeking guidance.");
@@ -53,20 +54,21 @@ function App() {
         </div>
         <div className="flex items-center gap-4">
           <button 
+            onClick={() => setLanguage(l => l === 'en' ? 'hi' : 'en')}
             className="flex items-center gap-1 font-label-sm text-[12px] text-primary hover:text-primary-container transition-colors tracking-widest bg-primary/10 px-3 py-1.5 rounded-full"
             aria-label="Toggle Language"
             title="Toggle between English and Hindi"
           >
-            <span className="uppercase">EN/HI</span>
+            <span className="uppercase font-bold">{language === 'en' ? 'EN' : 'HI'}</span>
           </button>
         </div>
       </header>
 
       {/* Main Content Area */}
       {messages.length === 0 ? (
-        <WelcomeShloka data={welcomeShloka} onStart={handleStart} />
+        <WelcomeShloka data={welcomeShloka} onStart={handleStart} language={language} />
       ) : (
-        <ChatWindow messages={messages} />
+        <ChatWindow messages={messages} language={language} />
       )}
 
       {/* Input Bar */}
