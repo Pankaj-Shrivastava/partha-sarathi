@@ -56,15 +56,23 @@ export default async function handler(req, res) {
 
     // 6. Construct final API Response (Schema defined in architecture.md)
     const finalResponse = {
-      type: "chat",
+      type: "shloka_response",
       shloka: {
+        chapter: bestMatchVerse.metadata.chapter,
+        verse: bestMatchVerse.metadata.verse,
+        citation: bestMatchVerse.metadata.citation,
+        text_content: bestMatchVerse.document,
         devanagari: bestMatchVerse.metadata.devanagari || llmResult.shloka?.devanagari || null,
-        roman: bestMatchVerse.metadata.sanskrit_roman || llmResult.shloka?.roman || null,
-        citation: bestMatchVerse.metadata.citation
+        sanskrit_roman: bestMatchVerse.metadata.sanskrit_roman || llmResult.shloka?.roman || null
       },
       translation: bestMatchVerse.metadata.translation || llmResult.translation,
       application: llmResult.application,
-      reflection: llmResult.reflection
+      reflection: llmResult.reflection,
+      sources: verses.map(v => ({
+        chapter: v.metadata.chapter,
+        verse: v.metadata.verse,
+        similarity: 1 - v.distance // Chroma returns distance, we return similarity (0 to 1)
+      }))
     };
 
     return res.status(200).json(finalResponse);
