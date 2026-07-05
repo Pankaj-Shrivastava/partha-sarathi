@@ -163,7 +163,9 @@ The Bhagavad Gita has a well-defined structure: **18 chapters → 700 verses**. 
 | `chapter` | `2` | Citation generation |
 | `verse` | `47` | Citation generation |
 | `citation` | `"Chapter 2, Verse 47"` | Direct display in response part A |
-| `devanagari` | `"कर्मण्येवाधिकारस्ते..."` | Direct display in response part A |
+| `text_content` | `"Translation: You have a right to... \n\nPurport: ..."` | Searchable corpus for ChromaDB |
+| `devanagari` | `"JaaTaSYa ih..."` (Balaram ASCII) | Requires custom `.ttf` Balaram font on frontend to render correctly |
+| `sanskrit_roman` | `"karmaṇy evādhikāras te..."` | IAST standard, direct display in UI |
 | `source_page` | `142` | Traceability to PDF |
 
 ### 3.3 Embedding Generation
@@ -509,8 +511,12 @@ Key system prompt components:
 {
   "type": "shloka_response",
   "shloka": {
-    "devanagari": "कर्मण्येवाधिकारस्ते...",
-    "citation": "Chapter 2, Verse 47"
+    "chapter": 2,
+    "verse": 47,
+    "citation": "Chapter 2, Verse 47",
+    "text_content": "Translation: You have a right to perform your prescribed duty... \n\nPurport: There are three considerations...",
+    "devanagari": "JaaTaSYa ih Da]uvae...",
+    "sanskrit_roman": "karmaṇy evādhikāras te..."
   },
   "translation": "You have a right to perform your prescribed duty...",
   "application": "The Gita teaches that...",
