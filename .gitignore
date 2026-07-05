@@ -10,3 +10,4 @@ __pycache__/
 /pdf/Bhagavad-gita-As-It-Is.pdf
 /ingestion/output/
 .DS_Store
+peacock_light/
