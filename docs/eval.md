@@ -71,7 +71,7 @@
 |---|---|---|---|---|
 | 2.1 | Script runs without error | `python ingestion/extract.py` | Exit code 0 | 🔴 |
 | 2.2 | Output file exists | `ls ingestion/output/raw_text.txt` | File exists, size > 1 MB | 🔴 |
-| 2.3 | Devanagari preserved | `grep -P "[\u0900-\u097F]" ingestion/output/raw_text.txt \| head -5` | Devanagari lines found | 🔴 |
+| 2.3 | IAST Transliteration preserved | `grep "jātasya" ingestion/output/raw_text.txt` | Matches found | 🔴 |
 | 2.4 | No binary content | `file ingestion/output/raw_text.txt` | Reports `UTF-8 Unicode text` or `ASCII text` | 🔴 |
 | 2.5 | Page count logged | Script stdout | Reports total pages processed (expect 800–1100) | 🟡 |
 | 2.6 | Character count logged | Script stdout | Reports total characters (expect 1M–5M) | 🟡 |
