@@ -49,8 +49,7 @@ function App() {
           </div>
         </div>
         <div className="hidden md:flex items-center gap-6">
-          <button className="font-label-sm text-[12px] text-primary border-b-2 border-primary pb-1 uppercase tracking-widest">Dialogue</button>
-          <button className="font-label-sm text-[12px] text-on-surface-variant hover:text-primary transition-colors pb-1 uppercase tracking-widest">Wisdom</button>
+          <span className="font-label-sm text-[12px] text-on-surface-variant/80 uppercase tracking-widest">Bhagavad Gita As It Is</span>
         </div>
         <div className="flex items-center gap-4">
           <button 
