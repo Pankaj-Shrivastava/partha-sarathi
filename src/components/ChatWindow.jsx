@@ -9,6 +9,17 @@ export default function ChatWindow({ messages, language, isLoading }) {
   const containerRef = useRef(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
 
+  const lastUserMessageRef = useRef(null);
+
+  const scrollToLastUserQuery = () => {
+    if (lastUserMessageRef.current) {
+      lastUserMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setShowScrollButton(false);
+    } else {
+      scrollToBottom(true);
+    }
+  };
+
   const scrollToBottom = (force = false) => {
     if (!containerRef.current) return;
     
@@ -25,7 +36,7 @@ export default function ChatWindow({ messages, language, isLoading }) {
   };
 
   useEffect(() => {
-    scrollToBottom(false);
+    scrollToLastUserQuery();
   }, [messages]);
 
   const handleScroll = () => {
@@ -44,8 +55,20 @@ export default function ChatWindow({ messages, language, isLoading }) {
       <main className="w-full max-w-4xl mx-auto px-6 md:px-8 pt-10 pb-[120px] flex flex-col gap-8 relative z-10">
         {messages.map((msg, index) => {
           const isLast = index === messages.length - 1;
+          
+          // Check if this is the last user message in the array
+          const isLastUserMessage = msg.role === 'user' && !messages.slice(index + 1).some(m => m.role === 'user');
+
           if (msg.role === 'user') {
-            return <MessageBubble key={msg.id} message={msg} isLast={isLast} language={language} />;
+            return (
+              <div 
+                key={msg.id} 
+                ref={isLastUserMessage ? lastUserMessageRef : null}
+                className="scroll-mt-8 w-full"
+              >
+                <MessageBubble message={msg} isLast={isLast} language={language} />
+              </div>
+            );
           }
           if (msg.role === 'assistant') {
             if (msg.type === 'crisis') {

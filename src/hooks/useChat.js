@@ -51,5 +51,11 @@ export function useChat(sessionId) {
 
   const clearError = () => setError(null);
 
-  return { messages, isLoading, error, sendMessage, clearError };
+  const clearMessages = () => {
+    setMessages([]);
+    isFollowUpRef.current = false;
+    setError(null);
+  };
+
+  return { messages, isLoading, error, sendMessage, clearError, clearMessages };
 }

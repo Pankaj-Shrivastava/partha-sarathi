@@ -6,11 +6,14 @@ import InputBar from './components/InputBar';
 import OfflineBanner from './components/OfflineBanner';
 import { useChat } from './hooks/useChat';
 import { useSession } from './hooks/useSession';
+import LanguageConfirmModal from './components/LanguageConfirmModal';
 
 function App() {
   const { sessionId, welcomeShloka } = useSession();
-  const { messages, isLoading, error, sendMessage, clearError } = useChat(sessionId);
+  const { messages, isLoading, error, sendMessage, clearError, clearMessages } = useChat(sessionId);
   const [language, setLanguage] = React.useState('en'); // 'en' or 'hi'
+  const [showLanguageModal, setShowLanguageModal] = React.useState(false);
+  const [pendingLanguage, setPendingLanguage] = React.useState(null);
 
   const handleStart = () => {
     sendMessage(language === 'hi' ? "मैं मार्गदर्शन चाहता हूँ।" : "I am seeking guidance.", language);
@@ -57,7 +60,15 @@ function App() {
         </div>
         <div className="flex items-center gap-4">
           <button 
-            onClick={() => setLanguage(l => l === 'en' ? 'hi' : 'en')}
+            onClick={() => {
+              const newLang = language === 'en' ? 'hi' : 'en';
+              if (messages.length > 0) {
+                setPendingLanguage(newLang);
+                setShowLanguageModal(true);
+              } else {
+                setLanguage(newLang);
+              }
+            }}
             className="flex items-center gap-1 font-label-sm text-[12px] text-primary hover:text-primary-container transition-colors tracking-widest bg-primary/10 px-3 py-1.5 rounded-full"
             aria-label="Toggle Language"
             title="Toggle between English and Hindi"
@@ -77,6 +88,18 @@ function App() {
       {/* Input Bar */}
       <InputBar onSend={(text) => sendMessage(text, language)} disabled={false} isLoading={isLoading} language={language} />
       
+      {/* Language Confirmation Modal */}
+      <LanguageConfirmModal 
+        isOpen={showLanguageModal} 
+        onClose={() => setShowLanguageModal(false)}
+        onConfirm={() => {
+          clearMessages();
+          setLanguage(pendingLanguage);
+          setShowLanguageModal(false);
+        }}
+        currentLanguage={language}
+        pendingLanguage={pendingLanguage}
+      />
     </div>
   );
 }
