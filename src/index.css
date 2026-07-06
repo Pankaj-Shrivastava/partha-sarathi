@@ -72,3 +72,11 @@ h1, h2, h3, h4, h5, h6 {
 .font-sanskrit {
   font-family: var(--font-tiro);
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

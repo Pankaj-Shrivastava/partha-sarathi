@@ -48,7 +48,7 @@ export default function ChatWindow({ messages, language, isLoading }) {
 
   return (
     <div 
-      className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth w-full"
+      className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth w-full scrollbar-none"
       ref={containerRef}
       onScroll={handleScroll}
     >

@@ -7,9 +7,12 @@ export default function WelcomeShloka({ data, onStart, language = 'en' }) {
   if (!data) return null; // Wait until data loads
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center relative z-10 w-full max-w-4xl mx-auto h-full px-6 md:px-8">
-      <div className="w-full rounded-xl p-[1px] bg-gradient-to-tr from-primary/30 to-secondary/30 shadow-[0_0_20px_rgba(0,106,106,0.1)] hover:shadow-[0_0_50px_rgba(0,106,106,0.3)] transition-shadow duration-1000 group">
-        <div className="w-full h-full bg-surface-container-lowest/80 backdrop-blur-xl rounded-[11px] p-8 flex flex-col items-center text-center space-y-6 relative overflow-hidden">
+    <div className="flex-1 flex flex-col relative z-10 w-full px-6 md:px-8 overflow-y-auto scrollbar-none min-h-0">
+      {/* Top spacer spring */}
+      <div className="flex-grow min-h-[2rem]"></div>
+      
+      <div className="w-full max-w-4xl mx-auto rounded-xl p-[1px] bg-gradient-to-tr from-primary/30 to-secondary/30 shadow-[0_0_20px_rgba(0,106,106,0.1)] hover:shadow-[0_0_50px_rgba(0,106,106,0.3)] transition-shadow duration-1000 group flex-shrink-0 relative z-10">
+        <div className="w-full bg-surface-container-lowest/80 backdrop-blur-xl rounded-[11px] p-8 flex flex-col items-center text-center space-y-6 relative overflow-hidden">
           
           <div className="space-y-3 z-10">
             {/* Dynamic Welcome Shloka */}
@@ -39,6 +42,9 @@ export default function WelcomeShloka({ data, onStart, language = 'en' }) {
           </button>
         </div>
       </div>
+      
+      {/* Bottom spacer spring */}
+      <div className="flex-grow min-h-[120px]"></div>
     </div>
   );
 }
