@@ -2,11 +2,23 @@ import React, { useRef, useEffect, useState } from 'react';
 import MessageBubble from './MessageBubble';
 import ShlokaCard from './ShlokaCard';
 import CrisisAlert from './CrisisAlert';
+import SkeletonShlokaCard from './SkeletonShlokaCard';
 
-export default function ChatWindow({ messages }) {
+export default function ChatWindow({ messages, language, isLoading }) {
   const endOfMessagesRef = useRef(null);
   const containerRef = useRef(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
+
+  const lastUserMessageRef = useRef(null);
+
+  const scrollToLastUserQuery = () => {
+    if (lastUserMessageRef.current) {
+      lastUserMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setShowScrollButton(false);
+    } else {
+      scrollToBottom(true);
+    }
+  };
 
   const scrollToBottom = (force = false) => {
     if (!containerRef.current) return;
@@ -24,7 +36,7 @@ export default function ChatWindow({ messages }) {
   };
 
   useEffect(() => {
-    scrollToBottom(false);
+    scrollToLastUserQuery();
   }, [messages]);
 
   const handleScroll = () => {
@@ -41,15 +53,28 @@ export default function ChatWindow({ messages }) {
       onScroll={handleScroll}
     >
       <main className="w-full max-w-4xl mx-auto px-6 md:px-8 pt-10 pb-[120px] flex flex-col gap-8 relative z-10">
-        {messages.map((msg) => {
+        {messages.map((msg, index) => {
+          const isLast = index === messages.length - 1;
+          
+          // Check if this is the last user message in the array
+          const isLastUserMessage = msg.role === 'user' && !messages.slice(index + 1).some(m => m.role === 'user');
+
           if (msg.role === 'user') {
-            return <MessageBubble key={msg.id} message={msg} />;
+            return (
+              <div 
+                key={msg.id} 
+                ref={isLastUserMessage ? lastUserMessageRef : null}
+                className="scroll-mt-8 w-full"
+              >
+                <MessageBubble message={msg} isLast={isLast} language={language} />
+              </div>
+            );
           }
           if (msg.role === 'assistant') {
             if (msg.type === 'crisis') {
               return <CrisisAlert key={msg.id} data={msg} />;
             } else if (msg.type === 'shloka_response') {
-              return <ShlokaCard key={msg.id} data={msg} />;
+              return <ShlokaCard key={msg.id} data={msg} language={language} />;
             } else {
               // Fallback for simple decline/text responses from the API
               return (
@@ -63,6 +88,7 @@ export default function ChatWindow({ messages }) {
           }
           return null;
         })}
+        {isLoading && <SkeletonShlokaCard />}
         <div ref={endOfMessagesRef} />
       </main>
 
@@ -72,7 +98,9 @@ export default function ChatWindow({ messages }) {
           onClick={() => scrollToBottom(true)}
           className="fixed bottom-28 left-1/2 -translate-x-1/2 z-50 bg-primary text-on-primary px-4 py-2 rounded-full shadow-lg flex items-center gap-2 hover:bg-primary-container hover:text-on-primary-container transition-all"
         >
-          <span className="font-label-sm text-[12px] tracking-widest uppercase">New message</span>
+          <span className="font-label-sm text-[12px] tracking-widest uppercase">
+            {language === 'hi' ? 'नया संदेश' : 'New message'}
+          </span>
           <span className="material-symbols-outlined text-[16px]">arrow_downward</span>
         </button>
       )}

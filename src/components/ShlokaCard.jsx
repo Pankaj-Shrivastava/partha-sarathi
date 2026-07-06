@@ -1,7 +1,11 @@
 import React from 'react';
 
-export default function ShlokaCard({ data }) {
+export default function ShlokaCard({ data, language = 'en' }) {
   const { shloka, translation, application, reflection } = data;
+
+  const displayText = language === 'en' 
+    ? (shloka?.roman || shloka?.devanagari)
+    : (shloka?.devanagari || shloka?.roman);
 
   return (
     <div className="flex justify-start w-full">
@@ -11,15 +15,18 @@ export default function ShlokaCard({ data }) {
           <div className="flex items-center gap-2 text-tertiary border-b border-outline-variant/50 pb-3">
             <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
             <span className="font-label-sm text-[11px] tracking-widest text-tertiary uppercase">
-              Bhagavad Gita • {shloka?.citation || 'Shloka'}
+              {language === 'hi' ? 'भगवद्गीता • ' : 'Bhagavad Gita • '}
+              {language === 'hi' 
+                ? (shloka?.citation?.replace('Chapter', 'अध्याय')?.replace('Verse', 'श्लोक') || 'श्लोक') 
+                : (shloka?.citation || 'Shloka')}
             </span>
           </div>
 
-          {/* Devanagari Verse */}
-          {shloka?.devanagari && (
+          {/* Verse Text */}
+          {displayText && (
             <div className="text-center py-3">
-              <p className="font-sanskrit text-[18px] text-primary drop-shadow-[0_0_10px_rgba(116,86,0,0.2)] leading-relaxed overflow-wrap break-word" lang="sa">
-                {shloka.devanagari}
+              <p className={`${language === 'hi' ? 'font-sanskrit' : 'font-body-lg italic'} text-[18px] text-primary drop-shadow-[0_0_10px_rgba(116,86,0,0.2)] leading-relaxed overflow-wrap break-word whitespace-pre-line`} lang={language === 'hi' ? 'sa' : 'en'}>
+                {displayText}
               </p>
             </div>
           )}
@@ -40,7 +47,7 @@ export default function ShlokaCard({ data }) {
             <div className="flex flex-col gap-2">
               <h3 className="font-headline-md text-[24px] font-medium text-primary flex items-center gap-2">
                 <span className="material-symbols-outlined text-[20px]">explore</span>
-                The Guidance
+                {language === 'hi' ? 'मार्गदर्शन' : 'The Guidance'}
               </h3>
               <p className="font-body-md text-[15px] text-on-surface/90 leading-relaxed">
                 {application}
@@ -54,7 +61,9 @@ export default function ShlokaCard({ data }) {
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-[18px] text-secondary mt-0.5">psychology</span>
                 <div>
-                  <h4 className="font-label-sm text-[11px] uppercase tracking-widest text-secondary mb-1">Reflection</h4>
+                  <h4 className="font-label-sm text-[11px] uppercase tracking-widest text-secondary mb-1">
+                    {language === 'hi' ? 'चिंतन' : 'Reflection'}
+                  </h4>
                   <p className="font-body-md text-[15px] text-on-surface">{reflection}</p>
                 </div>
               </div>

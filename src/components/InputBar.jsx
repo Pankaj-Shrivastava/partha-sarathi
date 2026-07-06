@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function InputBar({ onSend, disabled, isLoading }) {
+export default function InputBar({ onSend, disabled, isLoading, language = 'en' }) {
   const [text, setText] = useState('');
   const maxLength = 2000;
   
@@ -14,6 +14,13 @@ export default function InputBar({ onSend, disabled, isLoading }) {
     }
   };
 
+  const getPlaceholder = () => {
+    if (isLoading) {
+      return language === 'hi' ? "मार्गदर्शन खोजा जा रहा है..." : "Seeking guidance...";
+    }
+    return language === 'hi' ? "अपने मन की बात कहें, साधक..." : "Speak your mind, seeker...";
+  };
+
   return (
     <div className="fixed bottom-0 left-0 w-full z-50 bg-white/70 backdrop-blur-[24px] border-t border-outline-variant pt-4 pb-8 px-4 md:px-0">
       <div className="max-w-4xl mx-auto relative">
@@ -24,7 +31,7 @@ export default function InputBar({ onSend, disabled, isLoading }) {
           <input 
             ref={inputRef}
             className="flex-1 bg-transparent border-none text-on-surface font-body-lg text-[16px] placeholder:text-on-surface-variant/70 focus:ring-0 px-4 py-2 outline-none disabled:opacity-50"
-            placeholder={isLoading ? "Seeking guidance..." : "Speak your mind, seeker..."}
+            placeholder={getPlaceholder()}
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value.slice(0, maxLength))}

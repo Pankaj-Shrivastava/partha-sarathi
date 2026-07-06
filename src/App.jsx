@@ -6,17 +6,21 @@ import InputBar from './components/InputBar';
 import OfflineBanner from './components/OfflineBanner';
 import { useChat } from './hooks/useChat';
 import { useSession } from './hooks/useSession';
+import LanguageConfirmModal from './components/LanguageConfirmModal';
 
 function App() {
   const { sessionId, welcomeShloka } = useSession();
-  const { messages, isLoading, error, sendMessage, clearError } = useChat(sessionId);
+  const { messages, isLoading, error, sendMessage, clearError, clearMessages } = useChat(sessionId);
+  const [language, setLanguage] = React.useState('en'); // 'en' or 'hi'
+  const [showLanguageModal, setShowLanguageModal] = React.useState(false);
+  const [pendingLanguage, setPendingLanguage] = React.useState(null);
 
   const handleStart = () => {
-    sendMessage("I am seeking guidance.");
+    sendMessage(language === 'hi' ? "मैं मार्गदर्शन चाहता हूँ।" : "I am seeking guidance.", language);
   };
 
   return (
-    <div className="bg-background text-on-surface min-h-screen flex flex-col relative overflow-hidden">
+    <div className="bg-background text-on-surface h-[100dvh] flex flex-col relative overflow-hidden">
       
       {/* Cosmic Background Shaders/Glows */}
       <div 
@@ -26,8 +30,8 @@ function App() {
         }}
       />
 
-      <OfflineBanner />
-      <DisclaimerBanner />
+      <OfflineBanner language={language} />
+      <DisclaimerBanner language={language} />
 
       {/* Error Toast */}
       {error && (
@@ -44,34 +48,58 @@ function App() {
       <header className="w-full z-40 flex justify-between items-center px-4 md:px-6 py-2 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 relative">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
-            <span className="font-headline-md text-[24px] text-primary">Partha-Sarathi</span>
+            <span className="font-headline-md text-[24px] text-primary">
+              {language === 'hi' ? 'पार्थ-सारथी' : 'Partha-Sarathi'}
+            </span>
           </div>
         </div>
         <div className="hidden md:flex items-center gap-6">
-          <button className="font-label-sm text-[12px] text-primary border-b-2 border-primary pb-1 uppercase tracking-widest">Dialogue</button>
-          <button className="font-label-sm text-[12px] text-on-surface-variant hover:text-primary transition-colors pb-1 uppercase tracking-widest">Wisdom</button>
+          <span className="font-label-sm text-[12px] text-on-surface-variant/80 uppercase tracking-widest">
+            {language === 'hi' ? 'भगवद्गीता यथारूप' : 'Bhagavad Gita As It Is'}
+          </span>
         </div>
         <div className="flex items-center gap-4">
           <button 
+            onClick={() => {
+              const newLang = language === 'en' ? 'hi' : 'en';
+              if (messages.length > 0) {
+                setPendingLanguage(newLang);
+                setShowLanguageModal(true);
+              } else {
+                setLanguage(newLang);
+              }
+            }}
             className="flex items-center gap-1 font-label-sm text-[12px] text-primary hover:text-primary-container transition-colors tracking-widest bg-primary/10 px-3 py-1.5 rounded-full"
             aria-label="Toggle Language"
             title="Toggle between English and Hindi"
           >
-            <span className="uppercase">EN/HI</span>
+            <span className="uppercase font-bold">{language === 'en' ? 'EN' : 'HI'}</span>
           </button>
         </div>
       </header>
 
       {/* Main Content Area */}
       {messages.length === 0 ? (
-        <WelcomeShloka data={welcomeShloka} onStart={handleStart} />
+        <WelcomeShloka data={welcomeShloka} onStart={handleStart} language={language} />
       ) : (
-        <ChatWindow messages={messages} />
+        <ChatWindow messages={messages} language={language} isLoading={isLoading} />
       )}
 
       {/* Input Bar */}
-      <InputBar onSend={sendMessage} disabled={false} isLoading={isLoading} />
+      <InputBar onSend={(text) => sendMessage(text, language)} disabled={false} isLoading={isLoading} language={language} />
       
+      {/* Language Confirmation Modal */}
+      <LanguageConfirmModal 
+        isOpen={showLanguageModal} 
+        onClose={() => setShowLanguageModal(false)}
+        onConfirm={() => {
+          clearMessages();
+          setLanguage(pendingLanguage);
+          setShowLanguageModal(false);
+        }}
+        currentLanguage={language}
+        pendingLanguage={pendingLanguage}
+      />
     </div>
   );
 }

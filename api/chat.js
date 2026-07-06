@@ -2,6 +2,16 @@ import { queryVerses } from "../lib/chromaClient.js";
 import { generateResponse } from "../lib/llmClient.js";
 import { getSystemPrompt, getFormatInstruction } from "../lib/systemPrompt.js";
 import { detectCrisis, detectOffTopic, detectFollowUp, validateFormat, validateCitation } from "../lib/guardrails.js";
+import Sanscript from '@indic-transliteration/sanscript';
+
+const sanitizeIast = (text) => {
+  if (!text) return "";
+  return text
+    .replace(/śh/g, 'ṣ')
+    .replace(/sh/g, 'ṣ')
+    .replace(/ch/g, 'c') 
+    .replace(/chh/g, 'ch');
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -9,7 +19,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, sessionId, isFollowUp } = req.body;
+    const { message, sessionId, isFollowUp, language = 'en' } = req.body;
 
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
@@ -50,7 +60,7 @@ export default async function handler(req, res) {
     }
 
     // 3. Assemble full system prompt
-    const fullSystemPrompt = `${getSystemPrompt()}\n\n${getFormatInstruction()}`;
+    const fullSystemPrompt = `${getSystemPrompt()}\n\n${getFormatInstruction(language)}`;
 
     // 4. Call LLM with retry logic for format validation
     let llmResult = null;
@@ -106,10 +116,10 @@ export default async function handler(req, res) {
         verse: bestMatchVerse.metadata.verse,
         citation: bestMatchVerse.metadata.citation,
         text_content: bestMatchVerse.document,
-        devanagari: bestMatchVerse.metadata.devanagari || llmResult.shloka?.devanagari || null,
-        sanskrit_roman: bestMatchVerse.metadata.sanskrit_roman || llmResult.shloka?.roman || null
+        devanagari: Sanscript.t(sanitizeIast(bestMatchVerse.metadata.sanskrit_roman), 'iast', 'devanagari') || null,
+        roman: bestMatchVerse.metadata.sanskrit_roman || llmResult.shloka?.roman || null
       },
-      translation: bestMatchVerse.metadata.translation || llmResult.translation,
+      translation: language === 'hi' ? llmResult.translation : (bestMatchVerse.metadata.translation || llmResult.translation),
       application: llmResult.application,
       reflection: llmResult.reflection,
       sources: verses.map(v => ({
