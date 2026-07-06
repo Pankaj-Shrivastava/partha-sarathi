@@ -13,7 +13,7 @@ function App() {
   const [language, setLanguage] = React.useState('en'); // 'en' or 'hi'
 
   const handleStart = () => {
-    sendMessage("I am seeking guidance.");
+    sendMessage(language === 'hi' ? "मैं मार्गदर्शन चाहता हूँ।" : "I am seeking guidance.", language);
   };
 
   return (
@@ -27,8 +27,8 @@ function App() {
         }}
       />
 
-      <OfflineBanner />
-      <DisclaimerBanner />
+      <OfflineBanner language={language} />
+      <DisclaimerBanner language={language} />
 
       {/* Error Toast */}
       {error && (
@@ -45,11 +45,15 @@ function App() {
       <header className="w-full z-40 flex justify-between items-center px-4 md:px-6 py-2 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 relative">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
-            <span className="font-headline-md text-[24px] text-primary">Partha-Sarathi</span>
+            <span className="font-headline-md text-[24px] text-primary">
+              {language === 'hi' ? 'पार्थ-सारथी' : 'Partha-Sarathi'}
+            </span>
           </div>
         </div>
         <div className="hidden md:flex items-center gap-6">
-          <span className="font-label-sm text-[12px] text-on-surface-variant/80 uppercase tracking-widest">Bhagavad Gita As It Is</span>
+          <span className="font-label-sm text-[12px] text-on-surface-variant/80 uppercase tracking-widest">
+            {language === 'hi' ? 'भगवद्गीता यथारूप' : 'Bhagavad Gita As It Is'}
+          </span>
         </div>
         <div className="flex items-center gap-4">
           <button 
@@ -71,7 +75,7 @@ function App() {
       )}
 
       {/* Input Bar */}
-      <InputBar onSend={sendMessage} disabled={false} isLoading={isLoading} />
+      <InputBar onSend={(text) => sendMessage(text, language)} disabled={false} isLoading={isLoading} language={language} />
       
     </div>
   );

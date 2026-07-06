@@ -10,45 +10,55 @@ export default async function handler(req, res) {
         shloka: {
           devanagari: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।\nमा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥",
           roman: "karmaṇy-evādhikāras te mā phaleṣu kadācana\nmā karma-phala-hetur bhūr mā te saṅgo 'stv akarmaṇi",
-          citation: "Chapter 2, Verse 47"
+          citation: "Chapter 2, Verse 47",
+          citation_hi: "अध्याय 2, श्लोक 47"
         },
-        translation: "You have a right to perform your prescribed duty, but you are not entitled to the fruits of action. Never consider yourself to be the cause of the results of your activities, and never be attached to not doing your duty."
+        translation: "You have a right to perform your prescribed duty, but you are not entitled to the fruits of action. Never consider yourself to be the cause of the results of your activities, and never be attached to not doing your duty.",
+        translation_hi: "तुम्हें अपना नियत कर्म करने का अधिकार है, किन्तु कर्म के फलों के तुम अधिकारी नहीं हो। तुम कभी अपने आपको अपने कर्मों के फलों का कारण मत मानो, और न ही कर्म न करने में कभी आसक्त होओ।"
       },
       {
         type: "welcome",
         shloka: {
           devanagari: "यदा यदा हि धर्मस्य ग्लानिर्भवति भारत।\nअभ्युत्थानमधर्मस्य तदात्मानं सृजाम्यहम्॥",
           roman: "yadā yadā hi dharmasya glānir bhavati bhārata\nabhyutthānam adharmasya tadātmānaṁ sṛjāmy aham",
-          citation: "Chapter 4, Verse 7"
+          citation: "Chapter 4, Verse 7",
+          citation_hi: "अध्याय 4, श्लोक 7"
         },
-        translation: "Whenever and wherever there is a decline in religious practice, O descendant of Bharata, and a predominant rise of irreligion—at that time I descend Myself."
+        translation: "Whenever and wherever there is a decline in religious practice, O descendant of Bharata, and a predominant rise of irreligion—at that time I descend Myself.",
+        translation_hi: "हे भरतवंशी! जब भी और जहाँ भी धर्म का पतन होता है और अधर्म की प्रधानता होती है, तब तब मैं स्वयं अवतरित होता हूँ।"
       },
       {
         type: "welcome",
         shloka: {
           devanagari: "उद्धरेदात्मनात्मानं नात्मानमवसादयेत्।\nआत्मैव ह्यात्मनो बन्धुरात्मैव रिपुरात्मनः॥",
           roman: "uddhared ātmanātmānaṁ nātmānam avasādayet\nātmaiva hy ātmano bandhur ātmaiva ripur ātmanaḥ",
-          citation: "Chapter 6, Verse 5"
+          citation: "Chapter 6, Verse 5",
+          citation_hi: "अध्याय 6, श्लोक 5"
         },
-        translation: "A man must elevate himself by his own mind, not degrade himself. The mind is the friend of the conditioned soul, and his enemy as well."
+        translation: "A man must elevate himself by his own mind, not degrade himself. The mind is the friend of the conditioned soul, and his enemy as well.",
+        translation_hi: "मनुष्य को चाहिए कि वह अपने मन की सहायता से अपना उद्धार करे और अपने को नीचे न गिरने दे। यह मन बद्धजीव का मित्र भी है और शत्रु भी।"
       },
       {
         type: "welcome",
         shloka: {
           devanagari: "तद्विद्धि प्रणिपातेन परिप्रश्नेन सेवया।\nउपदेक्ष्यन्ति ते ज्ञानं ज्ञानिनस्तत्त्वदर्शिनः॥",
           roman: "tad viddhi praṇipātena paripraśnena sevayā\nupadekṣyanti te jñānaṁ jñāninas tattva-darśinaḥ",
-          citation: "Chapter 4, Verse 34"
+          citation: "Chapter 4, Verse 34",
+          citation_hi: "अध्याय 4, श्लोक 34"
         },
-        translation: "Just try to learn the truth by approaching a spiritual master. Inquire from him submissively and render service unto him. The self-realized soul can impart knowledge unto you because he has seen the truth."
+        translation: "Just try to learn the truth by approaching a spiritual master. Inquire from him submissively and render service unto him. The self-realized soul can impart knowledge unto you because he has seen the truth.",
+        translation_hi: "तुम गुरु के पास जाकर सत्य को जानने का प्रयास करो। उनसे विनीत होकर जिज्ञासा करो और उनकी सेवा करो। स्वरूपसिद्ध व्यक्ति तुम्हें ज्ञान प्रदान कर सकते हैं, क्योंकि उन्होंने सत्य का दर्शन किया है।"
       },
       {
         type: "welcome",
         shloka: {
           devanagari: "सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज।\nअहं त्वां सर्वपापेभ्यो मोक्षयिष्यामि मा शुचः॥",
           roman: "sarva-dharmān parityajya mām ekaṁ śaraṇaṁ vraja\nahaṁ tvāṁ sarva-pāpebhyo mokṣayiṣyāmi mā śucaḥ",
-          citation: "Chapter 18, Verse 66"
+          citation: "Chapter 18, Verse 66",
+          citation_hi: "अध्याय 18, श्लोक 66"
         },
-        translation: "Abandon all varieties of religion and just surrender unto Me. I shall deliver you from all sinful reaction. Do not fear."
+        translation: "Abandon all varieties of religion and just surrender unto Me. I shall deliver you from all sinful reaction. Do not fear.",
+        translation_hi: "समस्त प्रकार के धर्मों का परित्याग करो और मेरी शरण में आओ। मैं समस्त पापों से तुम्हारा उद्धार कर दूँगा। डरो मत।"
       }
     ];
 

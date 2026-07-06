@@ -22,11 +22,11 @@ export default function WelcomeShloka({ data, onStart, language = 'en' }) {
           <div className="h-px w-24 bg-primary/30 mx-auto my-4"></div>
           
           <p className="font-body-lg text-[16px] text-on-surface-variant max-w-lg mx-auto italic">
-            "{data.translation}"
+            "{language === 'hi' && data.translation_hi ? data.translation_hi : data.translation}"
           </p>
           
           <p className="font-label-sm text-[11px] text-on-surface-variant/70 mt-2 tracking-widest uppercase">
-            — Bhagavad Gita, {data.shloka.citation}
+            — {language === 'hi' && data.shloka.citation_hi ? `भगवद्गीता, ${data.shloka.citation_hi}` : `Bhagavad Gita, ${data.shloka.citation}`}
           </p>
         </div>
 
@@ -36,7 +36,7 @@ export default function WelcomeShloka({ data, onStart, language = 'en' }) {
           className="mt-8 px-8 py-3 bg-primary text-on-primary font-label-sm text-[12px] uppercase tracking-widest rounded-full hover:shadow-[0_0_20px_rgba(0,106,106,0.4)] transition-all duration-300 flex items-center gap-2 z-10 relative overflow-hidden group/btn"
         >
           <span className="absolute inset-0 w-full h-full bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-in-out"></span>
-          <span>Seek Guidance</span>
+          <span>{language === 'hi' ? 'मार्गदर्शन लें' : 'Seek Guidance'}</span>
           <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
         </button>
       </div>

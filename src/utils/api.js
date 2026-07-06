@@ -11,14 +11,14 @@ export const fetchWelcome = async () => {
   }
 };
 
-export const sendChatMessage = async (message, sessionId, isFollowUp) => {
+export const sendChatMessage = async (message, sessionId, isFollowUp, language = 'en') => {
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message, sessionId, isFollowUp }),
+      body: JSON.stringify({ message, sessionId, isFollowUp, language }),
     });
 
     if (!response.ok) {

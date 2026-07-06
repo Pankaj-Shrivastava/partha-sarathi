@@ -9,7 +9,7 @@ export function useChat(sessionId) {
   // Track if the current interaction is a follow-up
   const isFollowUpRef = useRef(false);
 
-  const sendMessage = async (text) => {
+  const sendMessage = async (text, language = 'en') => {
     if (!text.trim() || !sessionId) return;
 
     // 1. Add user message to UI
@@ -20,7 +20,7 @@ export function useChat(sessionId) {
 
     try {
       // 2. Call actual backend API
-      const responseData = await sendChatMessage(text, sessionId, isFollowUpRef.current);
+      const responseData = await sendChatMessage(text, sessionId, isFollowUpRef.current, language);
       
       // 3. Process backend response
       const botMsg = { ...responseData, id: (Date.now() + 1).toString(), role: 'assistant' };

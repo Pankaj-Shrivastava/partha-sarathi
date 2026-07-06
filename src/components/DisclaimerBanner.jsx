@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function DisclaimerBanner() {
+export default function DisclaimerBanner({ language = 'en' }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -12,10 +12,14 @@ export default function DisclaimerBanner() {
 
   if (!isVisible) return null;
 
+  const disclaimerText = language === 'hi' 
+    ? "प्रदान किया गया मार्गदर्शन दार्शनिक और आध्यात्मिक है। पेशेवर या चिकित्सा सहायता के लिए कृपया उचित संसाधनों की तलाश करें।"
+    : "Guidance provided is philosophical and spiritual. For professional or medical help, please seek appropriate resources.";
+
   return (
     <div className="sticky top-0 z-50 w-full bg-tertiary/10 backdrop-blur-md border-b border-tertiary/20 py-2 px-4 shadow-[0_4px_20px_rgba(116,86,0,0.05)] flex justify-center items-center relative">
       <p className="font-label-sm text-label-sm text-tertiary text-center max-w-[90%]">
-        Guidance provided is philosophical and spiritual. For professional or medical help, please seek appropriate resources.
+        {disclaimerText}
       </p>
       <button 
         onClick={() => {

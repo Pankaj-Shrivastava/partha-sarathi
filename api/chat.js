@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, sessionId, isFollowUp } = req.body;
+    const { message, sessionId, isFollowUp, language = 'en' } = req.body;
 
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
     }
 
     // 3. Assemble full system prompt
-    const fullSystemPrompt = `${getSystemPrompt()}\n\n${getFormatInstruction()}`;
+    const fullSystemPrompt = `${getSystemPrompt()}\n\n${getFormatInstruction(language)}`;
 
     // 4. Call LLM with retry logic for format validation
     let llmResult = null;
@@ -119,7 +119,7 @@ export default async function handler(req, res) {
         devanagari: Sanscript.t(sanitizeIast(bestMatchVerse.metadata.sanskrit_roman), 'iast', 'devanagari') || null,
         roman: bestMatchVerse.metadata.sanskrit_roman || llmResult.shloka?.roman || null
       },
-      translation: bestMatchVerse.metadata.translation || llmResult.translation,
+      translation: language === 'hi' ? llmResult.translation : (bestMatchVerse.metadata.translation || llmResult.translation),
       application: llmResult.application,
       reflection: llmResult.reflection,
       sources: verses.map(v => ({
