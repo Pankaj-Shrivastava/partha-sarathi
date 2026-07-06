@@ -550,4 +550,4 @@ Run through all 6 interaction paths on the production URL:
 ---
 
 *Document version: 1.0 — July 2026*
-*License: MIT — © 2026 Pankaj*
+*License: MIT*

@@ -47,8 +47,8 @@ function App() {
       {/* Top AppBar */}
       <header className="w-full z-40 flex justify-between items-center px-4 md:px-6 py-2 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 relative">
         <div className="flex items-center gap-4">
-          <div className="flex flex-col">
-            <span className="font-headline-md text-[24px] text-primary">
+          <div className="flex flex-col cursor-pointer group" onClick={clearMessages}>
+            <span className="font-headline-md text-[24px] text-primary group-hover:text-primary-container transition-colors">
               {language === 'hi' ? 'पार्थ-सारथी' : 'Partha-Sarathi'}
             </span>
           </div>

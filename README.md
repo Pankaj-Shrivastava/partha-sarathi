@@ -74,4 +74,4 @@ flowchart TD
 
 ## License
 
-MIT License — © 2026 Pankaj
+MIT License
