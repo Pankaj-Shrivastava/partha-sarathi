@@ -71,7 +71,7 @@ function App() {
       {messages.length === 0 ? (
         <WelcomeShloka data={welcomeShloka} onStart={handleStart} language={language} />
       ) : (
-        <ChatWindow messages={messages} language={language} />
+        <ChatWindow messages={messages} language={language} isLoading={isLoading} />
       )}
 
       {/* Input Bar */}

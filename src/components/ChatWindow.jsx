@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import MessageBubble from './MessageBubble';
 import ShlokaCard from './ShlokaCard';
 import CrisisAlert from './CrisisAlert';
+import SkeletonShlokaCard from './SkeletonShlokaCard';
 
-export default function ChatWindow({ messages, language }) {
+export default function ChatWindow({ messages, language, isLoading }) {
   const endOfMessagesRef = useRef(null);
   const containerRef = useRef(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -64,6 +65,7 @@ export default function ChatWindow({ messages, language }) {
           }
           return null;
         })}
+        {isLoading && <SkeletonShlokaCard />}
         <div ref={endOfMessagesRef} />
       </main>
 
@@ -73,7 +75,9 @@ export default function ChatWindow({ messages, language }) {
           onClick={() => scrollToBottom(true)}
           className="fixed bottom-28 left-1/2 -translate-x-1/2 z-50 bg-primary text-on-primary px-4 py-2 rounded-full shadow-lg flex items-center gap-2 hover:bg-primary-container hover:text-on-primary-container transition-all"
         >
-          <span className="font-label-sm text-[12px] tracking-widest uppercase">New message</span>
+          <span className="font-label-sm text-[12px] tracking-widest uppercase">
+            {language === 'hi' ? 'नया संदेश' : 'New message'}
+          </span>
           <span className="material-symbols-outlined text-[16px]">arrow_downward</span>
         </button>
       )}
